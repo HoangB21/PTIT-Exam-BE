@@ -12,29 +12,31 @@ let createUser = (data) => {
                     message: "Missing user's information"
                 })
             }
-            if (await checkEmailExist(data.email)) {
+            else if (await checkEmailExist(data.email)) {
                 resolve({
                     errorCode: 2,
                     message: "Email exists"
                 })
             }
-            if (await checkUserNameExist(data.username)) {
+            else if (await checkUserNameExist(data.username)) {
                 resolve({
                     errorCode: 4,
                     message: "Username exists"
                 })
             }
-            data.password = await hashPassword(data.password);
-            await db.User.create({
-                username: data.username,
-                email: data.email,
-                password: data.password,
-                role: data.role
-            })
-            resolve({
-                errorCode: 0,
-                message: "Create user sucessfully!"
-            })
+            else {
+                data.password = await hashPassword(data.password);
+                await db.User.create({
+                    username: data.username,
+                    email: data.email,
+                    password: data.password,
+                    role: data.role
+                })
+                resolve({
+                    errorCode: 0,
+                    message: "Create user sucessfully!"
+                })
+            }
         } catch (error) {
             reject(error);
         }
@@ -97,10 +99,6 @@ let getUser = (username) => {
     })
 }
 
-
-
-
-
 let hashPassword = (password) => {
     return new Promise((resolve, reject) => {
         try {
@@ -114,28 +112,23 @@ let hashPassword = (password) => {
 
 let updateUser = (data) => {
     return new Promise(async (resolve, reject) => {
-        let id = data.id
+        let username = data.username
         try {
-            if (!id) {
+            if (!username) {
                 resolve({
                     errorCode: 1,
                     message: "Missing some parameters"
                 })
             }
-            let user = await db.User.findOne({ where: { id: id }, raw: false });
+            let user = await db.User.findOne({ where: { username: username }, raw: false });
             if (!user) {
                 resolve({
                     errorCode: 2,
                     message: "User not found"
                 })
             }
-            user.profileName = data.profileName;
-            user.firstName = data.firstName;
-            user.lastName = data.lastName;
-            user.gender = data.gender;
+
             user.role = data.role;
-            user.dob = data.dob;
-            user.image = data.image;
             await user.save();
             resolve({
                 errorCode: 0,
@@ -149,15 +142,15 @@ let updateUser = (data) => {
 
 let deleteUser = (data) => {
     return new Promise(async (resolve, reject) => {
-        let id = data.id
+        let username = data.username
         try {
-            if (!id) {
+            if (!username) {
                 resolve({
                     errorCode: 1,
                     message: "Missing some parameters"
                 })
             }
-            let user = await db.User.findOne({ where: { id: id }, raw: false });
+            let user = await db.User.findOne({ where: { username: username }, raw: false });
             if (!user) {
                 resolve({
                     errorCode: 2,

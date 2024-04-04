@@ -1,4 +1,5 @@
 import userServices from "../services/userServices";
+import jwt from "../middleware/JWTMiddleware"
 
 let loginUserController = async (req, res) => {
     let username = req.body.username;
@@ -19,7 +20,7 @@ let loginUserController = async (req, res) => {
     return res.status(200).json({
         errorCode: data.errorCode,
         msg: data.msg,
-        user: data.user
+        token: jwt.generateToken(data.user)
     })
 }
 
