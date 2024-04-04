@@ -1,5 +1,6 @@
 import express from "express";
 import userController from "../controllers/userController";
+import examController from "../controllers/examController";
 
 import questionController from "../controllers/questionController"
 
@@ -12,6 +13,8 @@ import {
 let router = express.Router();
 
 let initWebRoutes = (app) => {
+
+
   // User
   router.post("/api/v1/login", userController.loginUserController);
   router.get("/api/v1/get-user", userController.getUserController);
@@ -35,6 +38,7 @@ let initWebRoutes = (app) => {
     router.post('/api/v1/create-question', questionController.createQuestionController);
     router.delete('/api/v1/delete-question',questionController.deleteQuestionController);
     router.put('/api/v1/update-question',questionController.updateQuestionController);
+
 
     return app.use("/", router);
 
