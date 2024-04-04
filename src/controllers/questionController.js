@@ -5,7 +5,7 @@ import questionService from "../services/questionService";
 
 let getQuestionController = async (req, res) => {
     try {
-        let questionId = req.body.id;
+        let questionId = req.query.questionId;
         let examId = req.query.examid;
 
         if (!questionId || !examId) {
@@ -22,7 +22,8 @@ let getQuestionController = async (req, res) => {
             errorCode: 0,
             msg: "Get question successful",
             question: data,
-            questionId:questionId
+            questionId:typeof parseInt(questionId),
+            examId: typeof examId
         });
     } catch (error) {
         return res.status(500).json({
@@ -38,7 +39,9 @@ let createQuestionController = async (req, res) => {
 }
 
 let updateQuestionController = async (req, res) => {
-    let message = await questionService.updateQuestion(req.body);
+    let data = req.body;
+    data.id = req.query.id;
+    let message = await questionService.updateQuestion(data);
     return res.status(200).json(message);
 }
 

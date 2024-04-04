@@ -39,23 +39,28 @@ let checkContentExist = async (content) => {
     return false;
 }
 
-let getQuestion = (questionid,examid) => {
+let getQuestion = (questionid, examid) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let data = (questionid === 'ALL')
-                ? await db.Question.findAll({where:{examid:examid}})
-                : await db.Question.findOne({ where: { questionid:questionid } });
-            if (data && data.length > 0) resolve(data);
-            else resolve(
-                {
+            let data;
+            if (questionid === 'ALL') {
+                data = await db.Question.findAll({ where: { examid: examid } });
+            } else {
+                data = await db.Question.findOne({ where: { questionid: questionid, examid: examid } });
+            }
+
+            if (data) {
+                resolve(data);
+            } else {
+                resolve({
                     msg: "question not found"
-                }
-            );
+                });
+            }
         } catch (error) {
-            reject(error)
+            reject(error);
         }
-    })
-}
+    });
+};
 
 let deleteQuestion = (data) => {
     return new Promise(async (resolve, reject) => {
@@ -92,10 +97,11 @@ let updateQuestion = (data) => {
             if (!id) {
                 resolve({
                     errorCode: 1,
-                    message: "Missing some parameters"
+                    message: "Missing some parameters",
+                    data: data
                 })
             }
-            let question = await db.Question.findOne({ where: { id: id }, raw: false });
+            let question = await db.Question.findOne({ where: { Questionid: id }, raw: false });
             if (!question) {
                 resolve({
                     errorCode: 2,
