@@ -1,8 +1,8 @@
 import express from "express";
 import userController from "../controllers/userController";
-import examController from "../controllers/examController";
-
+import answerController from "../controllers/answerController";
 import questionController from "../controllers/questionController"
+import { authenticateToken } from "../middleware/JWTMiddleware"
 
 import {
   createExamController,
@@ -13,34 +13,33 @@ import {
 let router = express.Router();
 
 let initWebRoutes = (app) => {
+  router.all('*', authenticateToken);
 
 
   // User
-  router.post("/api/v1/login", userController.loginUserController);
-  router.get("/api/v1/get-user", userController.getUserController);
-  router.post("/api/v1/create-user", userController.createUserController);
-  router.put("/api/v1/update-user", userController.updateUserController);
-  router.delete("/api/v1/delete-user", userController.deleteUserController);
+  router.post("/login", userController.loginUserController);
+  router.get("/get-user", userController.getUserController);
+  router.post("/create-user", userController.createUserController);
+  router.put("/update-user", userController.updateUserController);
+  router.delete("/delete-user", userController.deleteUserController);
   // Exam
-  router.get("/api/v1/exams/:examId", getExamByExamIdController);
-  router.post("/api/v1/exams", createExamController);
-  router.put("/api/v1/exams", updateExamController);
-  router.delete("/api/v1/exams/:examid", deleteExamController);
+  router.get("/exams/:examId", getExamByExamIdController);
+  router.post("/exams", createExamController);
+  router.put("/exams", updateExamController);
+  router.delete("/exams/:examid", deleteExamController);
+
+  // api question
+  router.get('/get-question', questionController.getQuestionController);
+  router.post('/create-question', questionController.createQuestionController);
+  router.delete('/delete-question', questionController.deleteQuestionController);
+  router.put('/update-question', questionController.updateQuestionController);
 
 
-    router.post("/api/v1/login", userController.loginUserController);
-    router.get("/api/v1/get-user", userController.getUserController);
-    router.post("/api/v1/create-user", userController.createUserController);
-    router.put("/api/v1/update-user", userController.updateUserController);
-    router.delete("/api/v1/delete-user", userController.deleteUserController);
-    // api question
-    router.get('/api/v1/get-question', questionController.getQuestionController);
-    router.post('/api/v1/create-question', questionController.createQuestionController);
-    router.delete('/api/v1/delete-question',questionController.deleteQuestionController);
-    router.put('/api/v1/update-question',questionController.updateQuestionController);
-
-
-    return app.use("/", router);
+  // answer
+  router.get('/get-answer', answerController.getAnswerById);
+  router.get('/get-answer-by-question', answerController.getAnswerByQuestion);
+  router.get('/')
+  return app.use("/api/v1", router);
 
 };
 

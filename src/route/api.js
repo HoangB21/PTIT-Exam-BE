@@ -18,7 +18,8 @@ const initApiRoutes = (app) => {
     router.delete('/delete-user', authenticateToken, userController.deleteUserController);
 
 
-    router.post('/create-exam', examController.createExam);
+
+
     return app.use("/api/v1", router);
 
     // router.post('/api/v1/create-exam', examController.createExamController);

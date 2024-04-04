@@ -25,6 +25,14 @@ exports.getAnswerById = async (id) => {
     }
 };
 
+exports.getAnswerByQuestion = async (questionid) => {
+    try {
+        return await Answer.findAll({ where: { questionid: questionid } });
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 exports.updateAnswer = async (id, questionid, content, istrue) => {
     try {
         const answer = await Answer.findByPk(id);

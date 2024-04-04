@@ -32,6 +32,19 @@ exports.getAnswerById = async (req, res) => {
     }
 };
 
+exports.getAnswerByQuestion = async (req, res) => {
+    try {
+        const { questionid } = req.params;
+        const answer = await answerService.getAnswerByQuestion(questionid);
+        if (!answer) {
+            return res.status(404).json({ message: 'Answer not found' });
+        }
+        res.status(200).json(answer);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 exports.updateAnswer = async (req, res) => {
     try {
         const { id } = req.params;

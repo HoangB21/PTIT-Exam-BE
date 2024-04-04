@@ -13,13 +13,6 @@ let createQuestion = (data) => {
                 });
                 return;
             }
-            if (await checkContentExist(data.content)) {
-                resolve({
-                    errorCode: 2,
-                    message: "Content already exists"
-                });
-                return;
-            }
             await db.Question.create({
                 examid: data.examid,
                 content: data.content
@@ -33,11 +26,7 @@ let createQuestion = (data) => {
         }
     })
 }
-let checkContentExist = async (content) => {
-    let data = await db.Question.findOne({ where: { content: content } });
-    if (data) return true;
-    return false;
-}
+
 
 let getQuestion = (questionid, examid) => {
     return new Promise(async (resolve, reject) => {
