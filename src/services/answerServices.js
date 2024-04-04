@@ -1,58 +1,69 @@
-const db = require('../models');
-const Answer = db.Answer;
+import db from '../models/index';
 
-exports.createAnswer = async (questionid, content, istrue) => {
+export const createAnswer = async (questionid, content, istrue) => {
     try {
-        return await Answer.create({ questionid, content, istrue });
+        return await db.Answer.create({ questionid, content, istrue });
     } catch (error) {
         throw new Error(error.message);
     }
 };
 
-exports.getAllAnswers = async () => {
+export const getAllAnswers = async () => {
     try {
-        return await Answer.findAll();
+        return await db.Answer.findAll();
     } catch (error) {
         throw new Error(error.message);
     }
 };
 
-exports.getAnswerById = async (id) => {
+export const getAnswerById = async (id) => {
     try {
-        return await Answer.findByPk(id);
+        return await db.Answer.findByPk(id);
     } catch (error) {
         throw new Error(error.message);
     }
 };
 
-exports.getAnswerByQuestion = async (questionid) => {
+export const getAnswerByQuestion = async (questionid) => {
     try {
-        return await Answer.findAll({ where: { questionid: questionid } });
+        return await db.Answer.findAll({ where: { questionid: questionid } });
     } catch (error) {
         throw new Error(error.message);
     }
 };
 
-exports.updateAnswer = async (id, questionid, content, istrue) => {
+export const updateAnswer = async (id, questionid, content, istrue) => {
     try {
-        const answer = await Answer.findByPk(id);
+        const answer = await db.Answer.findOne({ where: { answerid: id }, raw: false });
         if (!answer) {
             throw new Error('Answer not found');
         }
-        await answer.update({ questionid, content, istrue });
-        return answer;
+        // Cập nhật thuộc tính của đối tượng answer
+        answer.questionid = questionid;
+        answer.content = content;
+        answer.istrue = istrue;
+
+        // Lưu thay đổi vào cơ sở dữ liệu
+        await answer.save();
+        return {
+            msg: "Updated"
+        };
     } catch (error) {
         throw new Error(error.message);
     }
 };
 
-exports.deleteAnswer = async (id) => {
+
+export const deleteAnswer = async (id) => {
     try {
-        const answer = await Answer.findByPk(id);
+        const answer = await db.Answer.findOne({ where: { answerid: id }, raw: false });
         if (!answer) {
             throw new Error('Answer not found');
         }
         await answer.destroy();
+        return {
+            msg: "Deleted"
+        };
     } catch (error) {
         throw new Error(error.message);
     }

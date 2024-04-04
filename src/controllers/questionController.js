@@ -3,12 +3,10 @@ import questionService from "../services/questionService";
 // data.examid=param
 
 
-let getQuestionController = async (req, res) => {
+let getQuestionByIDController = async (req, res) => {
     try {
         let questionId = req.query.questionId;
-        let examId = req.query.examid;
-
-        if (!questionId || !examId) {
+        if (!questionId) {
             return res.status(200).json({
                 errorCode: 1,
                 msg: "Missing parameter",
@@ -16,14 +14,9 @@ let getQuestionController = async (req, res) => {
             });
         }
 
-        let data = await questionService.getQuestion(questionId, examId);
-
+        let data = await questionService.getQuestionById(questionId);
         return res.status(200).json({
-            errorCode: 0,
-            msg: "Get question successful",
-            question: data,
-            questionId:typeof parseInt(questionId),
-            examId: typeof examId
+            data
         });
     } catch (error) {
         return res.status(500).json({
@@ -33,6 +26,31 @@ let getQuestionController = async (req, res) => {
         });
     }
 };
+
+let getQuestionByExamController = async (req, res) => {
+    try {
+        let examId = req.query.examId;
+        if (!examId) {
+            return res.status(200).json({
+                errorCode: 1,
+                msg: "Missing parameter",
+                question: data
+            });
+        }
+
+        let data = await questionService.getQuestionByExam(examId);
+        return res.status(200).json({
+            data
+        });
+    } catch (error) {
+        return res.status(500).json({
+            errorCode: 2,
+            msg: "Internal server error",
+            error: error.message
+        });
+    }
+};
+
 let createQuestionController = async (req, res) => {
     let message = await questionService.createQuestion(req.body);
     return res.status(200).json(message);
@@ -51,8 +69,9 @@ let deleteQuestionController = async (req, res) => {
 }
 
 module.exports = {
-    getQuestionController: getQuestionController,
+    getQuestionByIDController: getQuestionByIDController,
     createQuestionController: createQuestionController,
     updateQuestionController: updateQuestionController,
     deleteQuestionController: deleteQuestionController,
+    getQuestionByExamController: getQuestionByExamController,
 }

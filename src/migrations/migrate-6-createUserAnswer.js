@@ -38,6 +38,16 @@ module.exports = {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE'
             },
+            examid: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'exams',
+                    key: 'examid'
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
+            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE

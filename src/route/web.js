@@ -3,6 +3,8 @@ import userController from "../controllers/userController";
 import answerController from "../controllers/answerController";
 import questionController from "../controllers/questionController"
 import { authenticateToken } from "../middleware/JWTMiddleware"
+import userAnswerController from "../controllers/userAnswerController"
+import submissionController from "../controllers/submissionController"
 
 import {
   createExamController,
@@ -29,16 +31,30 @@ let initWebRoutes = (app) => {
   router.delete("/exams/:examid", deleteExamController);
 
   // api question
-  router.get('/get-question', questionController.getQuestionController);
+  router.get('/get-question-by-id', questionController.getQuestionByIDController);
+  router.get('/get-question-by-exam', questionController.getQuestionByExamController);
   router.post('/create-question', questionController.createQuestionController);
   router.delete('/delete-question', questionController.deleteQuestionController);
   router.put('/update-question', questionController.updateQuestionController);
 
 
   // answer
-  router.get('/get-answer', answerController.getAnswerById);
-  router.get('/get-answer-by-question', answerController.getAnswerByQuestion);
-  router.get('/')
+  router.post('/create-answer', answerController.createAnswer);
+  router.get('/get-answer-by-id/:id', answerController.getAnswerById);
+  router.get('/get-answer-by-question/:questionid', answerController.getAnswerByQuestion);
+  router.put('/update-answer/:id', answerController.updateAnswer);
+  router.delete('/delete-answer/:id', answerController.deleteAnswer);
+
+  // user answer
+  router.post('/create-user-answer', userAnswerController.createUserAnswerController);
+  router.get('/get-user-answer-by-question/:questionid', userAnswerController.getUserAnswersByQuestionIdController);
+  router.delete('/delete-user-answer/:id', userAnswerController.deleteUserAnswerController);
+
+  // submission
+  router.post('/create-submission', submissionController.createSubmissionController);
+  router.get('/get-submission-of-exam/:examid', submissionController.getSubmissionOfExamController);
+  router.get('/get-submission-of-user/:userid', submissionController.getSubmissionOfUserController);
+  router.delete('/delete-submission/:id', submissionController.deleteSubmissionController);
   return app.use("/api/v1", router);
 
 };

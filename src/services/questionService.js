@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import db from '../models/index';
 
-const salt = bcrypt.genSaltSync(10);
 
 let createQuestion = (data) => {
     return new Promise(async (resolve, reject) => {
@@ -28,16 +27,11 @@ let createQuestion = (data) => {
 }
 
 
-let getQuestion = (questionid, examid) => {
+let getQuestionById = (questionid) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let data;
-            if (questionid === 'ALL') {
-                data = await db.Question.findAll({ where: { examid: examid } });
-            } else {
-                data = await db.Question.findOne({ where: { questionid: questionid, examid: examid } });
-            }
-
+            let data = null;
+            data = await db.Question.findOne({ where: { questionid: questionid } });
             if (data) {
                 resolve(data);
             } else {
@@ -51,9 +45,27 @@ let getQuestion = (questionid, examid) => {
     });
 };
 
+let getQuestionByExam = (examid) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = null;
+            data = await db.Question.findAll({ where: { examid: examid } });
+            if (!data || data.length === 0) {
+                resolve({
+                    msg: "question not found"
+                });
+            } else {
+                resolve(data);
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 let deleteQuestion = (data) => {
     return new Promise(async (resolve, reject) => {
-        let id = data.id
+        let id = data.questionid
         try {
             if (!id) {
                 resolve({
@@ -110,7 +122,8 @@ let updateQuestion = (data) => {
 }
 module.exports = {
     createQuestion: createQuestion,
-    getQuestion: getQuestion,
+    getQuestionById: getQuestionById,
+    getQuestionByExam: getQuestionByExam,
     createQuestion: createQuestion,
     updateQuestion: updateQuestion,
     deleteQuestion: deleteQuestion,

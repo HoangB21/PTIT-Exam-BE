@@ -59,6 +59,7 @@ exports.updateAnswer = async (req, res) => {
 exports.deleteAnswer = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(id);
         await answerService.deleteAnswer(id);
         res.status(204).end();
     } catch (error) {
