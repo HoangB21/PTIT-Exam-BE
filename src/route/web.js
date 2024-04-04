@@ -1,5 +1,8 @@
 import express from "express";
 import userController from "../controllers/userController";
+
+import questionController from "../controllers/questionController"
+
 import {
   createExamController,
   deleteExamController,
@@ -21,7 +24,21 @@ let initWebRoutes = (app) => {
   router.put("/api/v1/exams", updateExamController);
   router.delete("/api/v1/exams/:examid", deleteExamController);
 
-  return app.use("/", router);
+
+    router.post("/api/v1/login", userController.loginUserController);
+    router.get("/api/v1/get-user", userController.getUserController);
+    router.post("/api/v1/create-user", userController.createUserController);
+    router.put("/api/v1/update-user", userController.updateUserController);
+    router.delete("/api/v1/delete-user", userController.deleteUserController);
+    // api question
+    router.get('/api/v1/get-question', questionController.getQuestionController);
+    router.post('/api/v1/create-question', questionController.createQuestionController);
+    router.delete('/api/v1/delete-question',questionController.deleteQuestionController);
+    router.put('/api/v1/update-question',questionController.updateQuestionController);
+
+    return app.use("/", router);
+
 };
+
 
 module.exports = initWebRoutes;
